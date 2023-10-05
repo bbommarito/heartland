@@ -16,7 +16,9 @@ class PhotoRenamer
         # build a Struct for each of them. We use `each_with_index` so we can track the position
         # of the photo.
         @input.each_with_index do |photo, index|
-           @photos << build_photo(line: photo, index: index)
+           built_photo =  build_photo(line: photo, index: index) 
+
+           @photos << built_photo if valid(photo: built_photo)
         end
 
         # Now we sort the photos by city, and then by timestamp.
@@ -80,5 +82,15 @@ class PhotoRenamer
         name, extension = name_with_extension.split(".")
 
         Photo.new(index, name, extension, city, timestamp)
+    end
+
+    # Validates the photo struct.
+    # @param [Photo] photo: The photo struct.
+    # @return [Boolean] Whether or not the photo is valid.
+    def valid(photo:)
+        !photo.timestamp.nil? && !photo.timestamp.empty? && !photo.timestamp.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/).nil? &&
+        !photo.name.nil? && !photo.name.empty? &&
+        !photo.extension.nil? && !photo.extension.empty? &&
+        !photo.city.nil? && !photo.city.empty?
     end
 end

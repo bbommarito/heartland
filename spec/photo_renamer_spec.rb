@@ -2,6 +2,60 @@ require "spec_helper"
 require_relative "../photo_renamer"
 
 RSpec.describe PhotoRenamer do
+    context 'sad path' do
+        it 'handles a missing photo extensions' do
+            input = "photo, Krakow, 2013-09-05 14:08:15
+            Mike.png, London, 2015-06-20 15:13:22"
+
+            expected_output = "London1.png"
+
+            expect(PhotoRenamer.new(input: input).rename).to eq(expected_output)
+        end
+
+        it 'handles a missing photo city' do
+            input = "photo.jpg, Krakow, 2013-09-05 14:08:15
+            Mike.png, London, 2015-06-20 15:13:22
+            myFriends.png, Krakow, 2013-09-05 14:07:13
+            Eiffel.jpg, , 2015-07-23 08:03:02"
+
+            expected_output = "Krakow2.jpg\nLondon1.png\nKrakow1.png"
+
+            expect(PhotoRenamer.new(input: input).rename).to eq(expected_output)
+        end
+
+        it 'handles a missing photo timestamp' do
+            input = "photo.jpg, Krakow, 2013-09-05 14:08:15
+            Mike.png, London, 2015-06-20 15:13:22
+            myFriends.png, Krakow, 2013-09-05 14:07:13
+            Eiffel.jpg, Florianopolis, "
+
+            expected_output = "Krakow2.jpg\nLondon1.png\nKrakow1.png"
+
+            expect(PhotoRenamer.new(input: input).rename).to eq(expected_output)
+        end
+
+        it 'handles invalid photo timestamp' do
+            input = "photo.jpg, Krakow, 2013-09-05 14:08:15
+            Mike.png, London, 2015-06-20 15:13:22
+            myFriends.png, Krakow, 2013-09-05"
+
+            expected_output = "Krakow1.jpg\nLondon1.png"
+
+            expect(PhotoRenamer.new(input: input).rename).to eq(expected_output)
+        end
+
+        it 'handles invalid photo name' do
+            input = "photo.jpg, Krakow, 2013-09-05 14:08:15
+            , London, 2015-06-20 15:13:22"
+
+            expected_output = "Krakow1.jpg"
+
+            expect(PhotoRenamer.new(input: input).rename).to eq(expected_output)
+        end
+            
+            
+    end
+
     context "happy path" do
         it "produces expected output" do
             input = "photo.jpg, Krakow, 2013-09-05 14:08:15
