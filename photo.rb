@@ -1,13 +1,12 @@
 class Photo
     attr_accessor :position, :name, :extension, :city, :timestamp, :number, :new_name
 
-    def initialize(position:, name:, extension:, city:, timestamp:, number: nil)
+    def initialize(position:, name:, extension:, city:, timestamp:)
         @position = position
         @name = name
         @extension = extension
         @city = city
         @timestamp = timestamp
-        @number = number
     end
 
     def build_name(city_count:)
