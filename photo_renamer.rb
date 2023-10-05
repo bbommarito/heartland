@@ -1,8 +1,4 @@
-# I cannot justify a class here, as there are no methods needed. However,
-# I believe that a hash may become unwieldy. I am going to use a struct just
-# to keep things organized.
-
-Photo = Struct.new(:position, :name, :extension, :city, :timestamp, :number, :new_name)
+require_relative './photo'
 
 class PhotoRenamer
     def initialize(input:)
@@ -18,7 +14,7 @@ class PhotoRenamer
         @input.each_with_index do |photo, index|
            built_photo =  build_photo(line: photo, index: index) 
 
-           @photos << built_photo if valid(photo: built_photo)
+           @photos << built_photo if  built_photo.valid?
         end
 
         # Now we sort the photos by city, and then by timestamp.
@@ -29,7 +25,7 @@ class PhotoRenamer
         # Now that we have the total count of city photos, we can create the new name,
         # for each photo.
         @photos.each do |photo|
-            photo.new_name = build_new_name(photo: photo, city_count: city_counts[photo.city][:count].to_s.length)
+            photo.build_name(city_count: city_counts[photo.city][:count].to_s.length)
         end
 
         # Finally, we sort the photos by their original position, and then map the new name.
@@ -43,7 +39,7 @@ class PhotoRenamer
     # @param [Integer] city_count: The number of photos in the city.
     # @return [String] The new name.
     def build_new_name(photo:, city_count:)
-        "#{photo[:city]}#{photo[:number].to_s.rjust(city_count, '0')}.#{photo.extension}"
+        "#{photo.city}#{photo.number.to_s.rjust(city_count, '0')}.#{photo.extension}"
     end
 
     # Counts up the total number of photos per city, and rolls that up
@@ -81,16 +77,6 @@ class PhotoRenamer
         # `split` again to break them up.
         name, extension = name_with_extension.split(".")
 
-        Photo.new(index, name, extension, city, timestamp)
-    end
-
-    # Validates the photo struct.
-    # @param [Photo] photo: The photo struct.
-    # @return [Boolean] Whether or not the photo is valid.
-    def valid(photo:)
-        !photo.timestamp.nil? && !photo.timestamp.empty? && !photo.timestamp.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/).nil? &&
-        !photo.name.nil? && !photo.name.empty? &&
-        !photo.extension.nil? && !photo.extension.empty? &&
-        !photo.city.nil? && !photo.city.empty?
+        Photo.new(position: index, name: name, extension: extension, city: city, timestamp: timestamp)
     end
 end
