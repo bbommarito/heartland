@@ -53,6 +53,14 @@ RSpec.describe PhotoRenamer do
             expect(PhotoRenamer.new(input: input).rename).to eq(expected_output)
         end
             
+        it 'handles a missing field' do
+            input = "photo.jpg, Krakow, 2013-09-05 14:08:15
+            London, 2015-06-20 15:13:22"
+
+            expected_output = "Krakow1.jpg"
+
+            expect(PhotoRenamer.new(input: input).rename).to eq(expected_output)
+        end
             
     end
 
