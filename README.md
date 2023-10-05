@@ -21,3 +21,7 @@ I would like to thank everyone there for giving me this opportunity. I look forw
 3. The use of negation in the `valid?` function is a bit of a habit from Vandegrift. I can certainly avoid using negation, but again, that is based on the team I am on and their preference. As you may notice, I'm flexible.
 
 I would like to thank you all again, and I look forward to what comes next.
+
+P.S. I left out how to run the script. Boy... I'm an idiot.
+
+`PhotoRenamer.new(input: "").rename`
